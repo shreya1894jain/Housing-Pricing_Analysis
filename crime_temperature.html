@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+.bar {
+  fill: steelblue;
+}
+
+.bar:hover {
+  fill: brown;
+}
+
+.axis {
+  font: 10px Arial;
+}
+
+.tipsy-arrow {
+    background-position:0 50%;}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.x.axis path {
+
+}
+
+#slider { 
+	margin: 5px;
+	align: center; }
+    
+#slider1 { 
+	margin: 5px;
+	align: center; }
+#slider2 { 
+	margin: 5px;
+	align: center; }
+ 
+.st {
+ left: 200px;
+ }   
+</style>
+<body bgcolor="#ffe6cc">
+<p>
+<font size="4">
+<b> Shortlist the states for your next home: </b>
+</font></p>
+<p>
+<div id = "filter" class = "st">
+<b>State:</b></div>
+</p>    
+
+<b><u>Crime Rate</u></b> </div>
+<div id = "slider" style="width: 180px; height: 10px;" class = "left"></div>
+
+
+<p>
+  <label for="Rate">Per 10,000 inhabitants:</label>
+  <input type="text" id="Rate" style="border: 0; color: #f6931f; font-weight: bold;" />
+</p>
+
+
+<b><u>Temperature</u></b> </div>
+<div id = "slider1" style="width: 180px; height: 10px;" class = "left"></div>
+
+
+<p>
+  <label for="temp">Range:</label>
+  <input type="text" id="temp" style="border: 0; color: #f6931f; font-weight: bold;" />
+</p>
+
+
+<b><u>Price</u></b> </div>
+<div id = "slider2" style="width: 180px; height: 10px;" class = "left"></div>
+
+
+<p>
+  <label for="Price">Range:</label>
+  <input type="text" id="Price" style="border: 0; color: #f6931f; font-weight: bold;" />
+</p>
+
+
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="chosen.min.css">
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+<link rel="stylesheet" href="ui.slider.extras.css">
+<link rel="stylesheet" href="jquery-ui-1.7.1.custom.css">
+<link href="tipsy.css" rel="stylesheet" type="text/css" />
+<link href="jquery.ui.labeledslider.css" rel="stylesheet" type="text/css" />
+   
+      <script src="jquery-1.12.0.js"></script>
+  	<script src="selectToUISlider.jQuery.js"></script>
+    <script src="jquery-ui.js"></script>
+    <script src="chosen.jquery.min.js"></script>
+    
+     
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+   
+    <script src="underscore.js"></script>
+    <script type="text/javascript" src="jquery.tipsy.js"></script>
+    <script src ="jquery.ui.labeledslider.js"></script>
+     <script src="d3.slider.js"></script>
+  
+   
+
+<script type = "text/javascript">
+
+var first=140;
+var last=1210;
+var first1=25;
+var last1=75;
+var first2=0;
+var last2=390000;
+
+ var dataset = ['All'];
+ var selected;
+
+var margin = {top: 0, right: 40, bottom: 80, left: 70},
+    width = 960 - margin.left - margin.right,
+    height = 320 - margin.top - margin.bottom;
+    var colors = d3.scale.category20();
+    
+    
+var yearselected;
+
+var x = d3.scale.ordinal()
+    .rangeRoundBands([0, width], .1);
+
+var y = d3.scale.linear()
+    .range([height, 0]);
+
+var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom");
+
+var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left")
+    .ticks(10);
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+d3.csv("FinalVizData.csv", function(error, data) {
+
+ data.forEach(function(d) {
+  d.Year = +d.Year;
+  });
+  
+    var dropdown = d3.select("#filter").append("select")
+                .attr("class","State");
+     var options = dropdown.selectAll("option")
+    .data([{State:"All"}].concat(data)) 
+    .enter()
+    .append("option");
+                    
+    options.text(function (d) {return d.State;})
+        .attr("value", function (d) {return d.State;});
+        
+    var options = dropdown.selectAll("option")
+      .data(d3.map(data, function(d) {
+        return d.State;
+      }).keys())
+      .enter()
+      .append("option")
+      .property("selected", function(d) {
+        return d == defaultOption;
+      })
+      .text(function(d) {
+        return d;
+      })
+      .attr("value", function(d) {
+        return d;
+      });
+      
+    showbar(dropdown.node());
+    dropdown.on("change", function() {
+      showbar(this)
+    });
+    function showbar(me,data){
+   
+   
+       selected = me.value;
+        dataset.push("selected");
+         displayOthers = me.checked ? "inline" : "none";
+      display = me.checked ? "none" : "inline";
+        if(selected == 'All'){
+        svg.selectAll(".bar")
+            .attr("display", display);
+      }
+       else
+       {
+        
+        svg.selectAll(".bar")
+        .filter(function(d) {
+          return selected != d.State;
+        })
+        .attr("display", displayOthers);
+
+      svg.selectAll(".bar")
+        .filter(function(d) {
+          return selected == d.State;
+        })
+        .attr("display", display);
+        }
+       
+    }
+ 
+
+options.text(function (d) { return d.State; })
+       .attr("value", function (d) { return d.State; });
+       
+  x.domain(data.map(function(d) { return d.State; }));
+  y.domain([0, d3.max(data, function(d) { return d.Year; })]);
+
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis)
+      .selectAll("text")
+      .attr("y",-5)
+      .attr("x",43)
+      .attr("transform","rotate(90)")
+      .append("text")
+      .style("text-anchor", "end")
+      .text("State");
+
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 10)
+      .style("text-anchor", "end")
+      .text("Price");
+
+  svg.selectAll(".bar")
+      .data(data)
+    .enter().append("rect")
+      .attr("class", "bar")
+      .attr("x", function(d) { return x(d.State); })
+      .attr("width", x.rangeBand())
+      .attr("y", function(d) { return y(d.Year); })
+      .attr("height", function(d) { return height - y(d.Year); })
+      .attr("stroke", "black")
+    //  .style("fill", function(d, i) { return colors(i)})
+    // .style("opacity",0.8);
+      
+function create_svgbody(first, last,first1,last1,first2,last2){
+    
+        d3.select("svg").remove();
+        var svg = d3.select("body").append("svg")
+        
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+          
+       
+       var newdata= d3.csv("FinalVizData.csv", function(newdata){
+
+            var filtered=newdata.filter(function(d,i)
+            {
+
+                if ((d["Crimerate"]>=first && d["Crimerate"]<=last) && (d["AverageTemp"]>=first1 && d["AverageTemp"]<=last1) && (d["Year"]>=first2 && d["Year"]<=last2))
+                {
+                     return d;
+                }
+                
+
+            });
+svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis)
+      .selectAll("text")
+      .attr("y",-5)
+      .attr("x",43)
+      .attr("transform","rotate(90)");
+       svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+      .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 10)
+      .style("text-anchor", "end")
+      .text("Price");
+       svg.selectAll(".bar")
+      .data(filtered)
+      .enter().append("rect")
+    //  .transition().duration(0)
+                    
+      .attr("class", "bar")
+      .attr("x", function(d) { return x(d.State); })
+      .attr("width", x.rangeBand())
+      .attr("y", function(d) { return y(d.Year); })
+      .attr("height", function(d) { return height - y(d.Year); })
+      .attr("stroke", "black")
+     //  .style("fill", function(d, i) { return colors(i)})
+    //  .style("opacity",0.8);
+      
+         var options = dropdown.selectAll("option")
+      .data(d3.map(data, function(d) {
+        return d.State;
+      }).keys())
+      .enter()
+      .append("option")
+      .property("selected", function(d) {
+        return d == defaultOption;
+      })
+      .text(function(d) {
+        return d;
+      })
+      .attr("value", function(d) {
+        return d;
+      });
+      
+    showbar(dropdown.node());
+    dropdown.on("change", function() {
+      showbar(this)
+    });
+    function showbar(me,data){
+   
+   
+       selected = me.value;
+        dataset.push("selected");
+         displayOthers = me.checked ? "inline" : "none";
+      display = me.checked ? "none" : "inline";
+        if(selected == 'All'){
+        svg.selectAll(".bar")
+            .attr("display", display);
+      }
+       else
+       {
+        
+        svg.selectAll(".bar")
+        .filter(function(d) {
+          return selected != d.State;
+        })
+        .attr("display", displayOthers);
+
+      svg.selectAll(".bar")
+        .filter(function(d) {
+          return selected == d.State;
+        })
+        .attr("display", display);
+        }
+       
+    }
+ 
+
+options.text(function (d) { return d.State; })
+       .attr("value", function (d) { return d.State; });
+      $('.bar').tipsy({ 
+        gravity: 'w', 
+        html: true, 
+        title: function() {
+          var d = this.__data__;
+          console.log(d.Year);
+          return "State: " + d.State + "<br>"+ "Price: " + d.Year + "<br>"+ "Crime Rate: " + d.Crimerate + "<br>" + "Temperature: " + d.AverageTemp; 
+        }
+      });
+     
+     
+    });
+    }
+     
+      $('.bar').tipsy({ 
+        gravity: 'w', 
+        html: true, 
+        title: function() {
+          var d = this.__data__;
+          console.log(d.Year);
+          return "State: " + d.State + "<br>" + "Price: " + d.Year + "<br>"+ "Crime Rate: " + d.Crimerate + "<br>" + "Temperature: " + d.AverageTemp; 
+        }
+      });
+      
+       var $slider;
+    $slider = $(function () {
+        $("#slider").slider({
+            range: true,
+            min: 140,
+            max: 1210,
+            values: [140, 1210],
+            slide: function (event, ui) {
+                first = ui.values[0];
+                last = ui.values[1];
+                 $( "#Rate" ).val( first + "  - " + last + " ");
+                console.log(first, last);
+                d3.selectAll("bar").remove();
+                d3.selectAll("text").remove();
+                create_svgbody(first,last,first1,last1,first2,last2);
+            }
+        });
+    });
+    
+     var $slider1;
+    $slider1 = $(function () {
+         $('#slider1').slider({
+            range: true,
+            min: 25,
+            max: 75,
+            values: [25, 75],
+          
+            slide: function (event, ui) {
+                first1 = ui.values[0];
+                last1 = ui.values[1];
+                 $( "#temp" ).val( first1 + " F - " + last1 + " F ");
+                console.log(first1, last1);
+                d3.selectAll("bar").remove();
+                d3.selectAll("text").remove();
+                
+      
+                create_svgbody(first,last,first1,last1,first2,last2);
+             
+
+                } 
+
+            
+        });
+    });
+
+     var $slider2;
+    $slider2 = $(function () {
+        $("#slider2").slider({
+            range: true,
+            min: 0,
+            max: 390000,
+            values: [0, 390000],
+            slide: function (event, ui) {
+                first2 = ui.values[0];
+                last2 = ui.values[1];
+                 $( "#Price" ).val( "$ " + first2 + " - $ " + last2 );
+                console.log(first, last);
+                d3.selectAll("bar").remove();
+                d3.selectAll("text").remove();
+                create_svgbody(first,last,first1,last1,first2,last2);
+            }
+        });
+    });   
+   
+   
+});
+
+</script>

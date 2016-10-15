@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+
+
+<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+<link rel="stylesheet" href="jquery-ui-1.7.1.custom.css">
+<link href="tipsy.css" rel="stylesheet" type="text/css" />
+   
+<script src="jquery-1.12.0.js"></script>
+<script src="jquery-ui.js"></script>
+<script src="chosen.jquery.min.js"></script>
+    
+   
+
+<script src="underscore.js"></script>
+<script type="text/javascript" src="jquery.tipsy.js"></script>
+
+<style> /* set the CSS */
+
+
+body { font: 15px Arial;
+       background-color: #ffe6cc;
+       }
+path { 
+    stroke: red;
+    stroke-width:4;
+    fill: none;
+}
+.axis path,
+.axis line {
+    fill: none;
+    stroke: black;
+    stroke-width: 4;
+    shape-rendering: crispEdges;
+}
+
+.state {
+    background-color: #4CAF50;
+    color: black;
+    padding: 16px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+}
+
+#chart1 { position: absolute; left:1px; top:30px; width:30%; }
+
+#chart2 {position: absolute; right:1px; top:30px; width:40%;}
+
+#but1 { position: absolute; left:145px; top:517px; width: 8%;}
+
+#but2 { position: absolute; left:298px; top:517px; width: 8%;}
+
+#but3{ position: absolute; left:450px; top:517px; width: 8%;}
+
+
+#but4{ position: absolute; right:350px; top:520px; width: 8%;}
+
+#but5 { position: absolute; right:198px; top:520px; width: 8%;}
+
+#but6 { position: absolute; right:45px; top:520px; width: 8%;}
+
+#ht {  -webkit-transform: rotate(-90deg); transform: rotate(-90deg);}
+
+.tipsy-arrow {
+    background-position:0 50%;}
+Chat conversation end
+
+
+</style>
+
+
+
+<div id="chart1" style="background-color: white;
+     width:785px;left:10px"></div>
+<div id="chart2" style="background-color: white;
+     width:740px; left:810px;"></div>
+
+<body>
+
+
+<p>
+  <label for="Price" style="font-weight: bold;position: relative; top:15px; width: 260px; left: 183px; height: 30px; font-size: 20px">Region:</label>
+  <input type="text" id="Price" style="border: 0;  color: red; font-weight: bold;position: relative; top:15px; width: 260px; left: 193px; height: 30px; font-size: 22px" />
+</p>
+
+
+<p>
+  <label for="Price2" style="font-weight: bold;position: absolute; top:35px; width: 160px; left: 429px; height: 30px; font-size: 20px">Year:</label>
+  <input type="text" id="Price2" style="border: 0;  color: red; font-weight: bold;position: absolute; top:32px; width: 160px; left: 493px; height: 30px; font-size: 22px" />
+</p>
+`
+
+<div id="ht" style="position: absolute; top:200px; width: 120px; left: 43px; height: 30px;font-size: 20px">House Value</div>
+<div id="ht" style="position: absolute; top:200px; width: 120px; left: 843px; height: 30px;font-size: 20px">House Value</div>
+<DIV style="position: absolute; top:540px; width: 160px; left: 333px; height: 10px;">By City</div>
+<DIV style="position: absolute; top:520px; width: 160px; left: 263px; height: 10px;"><strong>OR</strong></div>
+<DIV style="position: absolute; top:540px; width: 160px; left:163px; height: 10px;">By State</div>
+<DIV style="position: absolute; top:540px; width: 160px; left:463px; height: 10px;">By Year</div>
+
+
+
+<select name="state" id="but1" style=" padding:1.5px;">
+  <option >Show by State</option>
+  <option value="Florida" onclick="update(this)">Florida</option>
+  <option value="Ohio" onclick="update(this)">Ohio</option> 
+  <option value="Washington" onclick="update(this)">Washington</option>
+  <option value="Nevada" onclick="update(this)">Nevada</option> 
+  <option value="Illinois" onclick="update(this)">Illinois</option>
+  <option value="Virginia" onclick="update(this)">Virginia</option>  
+  <option value="Ohio" onclick="update(this)">Ohio</option> 
+  <option value="New Jersey" onclick="update(this)">New Jersey</option>  
+  <option value="Georgia" onclick="update(this)">Georgia</option>
+  <option value="Indiana" onclick="update(this)">Indiana</option> 
+  <option value="Arizona" onclick="update(this)">Arizona</option>  
+  <option value="Maryland" onclick="update(this)">Maryland</option>
+  
+  <option value="Utah" onclick="update(this)">Utah</option>
+  <option value="Kentucky" onclick="update(this)">Kentucky</option> 
+  <option value="Oregon" onclick="update(this)">Oregon</option>
+  <option value="New Mexico" onclick="update(this)">New Mexico</option> 
+  <option value="Minnesota" onclick="update(this)">Minnesota</option>
+  <option value="Alabama" onclick="update(this)">Alambama</option> 
+  <option value="Iowa" onclick="update(this)">Iowa</option>
+  <option value="Connecticut" onclick="update(this)">Connecticut</option> 
+  
+</select>
+
+<select name="city" id="but2" style=" padding:1.2px;">
+  <option>Show by City</option>
+  <option value="Seattle" onclick="updater(this)">Seattle</option>
+  <option value="Boston" onclick="updater(this)">Boston</option>
+  <option value="Miami" onclick="updater(this)">Miami</option>
+  <option value="Atlanta" onclick="updater(this)">Atlanta</option>
+  <option value="Seattle" onclick="updater(this)">Seattle</option>
+  <option value="Phoenix" onclick="updater(this)">Phoenix</option>
+  <option value="Sacramento" onclick="updater(this)">Sacramento</option>
+  <option value="Las Vegas" onclick="updater(this)">Las Vegas</option>
+  <option value="San Jose" onclick="updater(this)">San Jose</option>
+  <option value="Cincinnati" onclick="updater(this)">Cincinnati</option>
+  <option value="Charlotte" onclick="updater(this)">Charlotte</option>
+  <option value="Denver" onclick="updater(this)">Denver</option>
+  <option value="Tampa" onclick="updater(this)">Tampa</option>
+  <option value="Portland" onclick="updater(this)">Portland</option>
+  <option value="Cleveland" onclick="updater(this)">Cleveland</option>
+  <option value="Pittsburgh" onclick="updater(this)">Pittsburgh</option>
+  <option value="Baltimore" onclick="updater(this)">Baltimore</option>
+  <option value="Minneapolis" onclick="updater(this)">Minneapolis</option>
+  <option value="Chicago" onclick="updater(this)">Chicago</option>
+</select>
+
+<select name="year" id="but3" style=" padding:1.2px;">
+  <option>Select Year</option>
+  <option value="2012" onclick="updater2(this)">2012</option>
+  <option value="2013" onclick="updater2(this)">2013</option>
+  <option value="2014" onclick="updater2(this)">2014</option>
+  <option value="2015" onclick="updater2(this)">2015</option>
+</select>
+
+
+
+
+
+
+<script>
+
+
+// Set the dimensions of the canvas / graph
+var margin = {top: 20, right: 20, bottom: 30, left: 70},
+    width = 800 - margin.left - margin.right,
+    height = 480 - margin.top - margin.bottom;
+// Parse the date / time
+var parseDate = d3.time.format("%-m").parse;
+// Set the ranges
+var x = d3.time.scale().range([0, width]);
+var y = d3.scale.linear().range([height, 0]);
+// Define the axes
+var xAxis = d3.svg.axis().scale(x)
+    .orient("bottom").ticks(12);
+var yAxis = d3.svg.axis().scale(y)
+    .orient("left").ticks(7);
+// Define the line`
+var valueline = d3.svg.line()
+    .x(function(d) { return x(d.year); })
+    .y(function(d) { return y(d.city); });
+
+
+
+// Adds the svg canvas
+var chart1 = d3.select("#chart1")
+    .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+        .attr("transform", 
+              "translate(" + margin.left + "," + margin.top + ")");
+    chart1.append("text")      // text label for the x axis
+        .attr("x", 295 )
+        .attr("y", 415 )
+        .style("text-anchor", "middle")
+        .text("Months");
+
+
+
+  
+   
+// Get the data
+d3.csv("state12.csv", function(error, data) {
+    data.forEach(function(d) {
+        d.year = 1;
+        d.city = 1;
+    });
+    // Scale the range of the data
+   x.domain([0,0]);
+   y.domain([0,0]);
+    // Add the valueline path.
+   chart1.append("path")
+        .attr("class", "line")
+        .attr("d", valueline(data))
+        ;
+    // Add the X Axis
+    chart1.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(xAxis);
+    //Add the Y Axis
+    chart1.append("g")
+        .attr("class", "y axis")
+        .call(yAxis);   
+
+
+});
+
+var t = "2012";
+
+function update(option) {
+    
+         d3.csv("state12.csv", function(error, data) {
+         data.forEach(function(d) {
+	 d.year = parseDate(d.month);
+	 d.city = +d[option.value];
+	 });
+         // Scale the range of the data again 
+      x.domain(d3.extent(data, function(d) { return d.year; }));
+	  y.domain([d3.min(data, function(d) { return d.city; })-1000, d3.max(data, function(d) { return d.city; })+ 1000]);
+         // Select the section we want to apply our changes to
+         var chart1 = d3.select("#chart1").transition();
+        // Make the changes
+         chart1.select(".line")   // change the line
+            .duration(750)
+            .attr("d", valueline(data));
+         chart1.select(".x.axis") // change the x axis
+            .duration(750)
+            .call(xAxis);
+         chart1.select(".y.axis") // change the y axis
+            .duration(750)
+            .call(yAxis); 
+       $("#Price").val(option.value);
+       $("#Price2").val(t);
+          });
+         latest = option.value;
+         current = 0;
+        }
+
+        
+
+function updater(option) {
+    
+         d3.csv("city12.csv", function(error, data) {
+         data.forEach(function(d) {
+	 d.year = parseDate(d.month);
+	 d.city = +d[option.value];
+	 });
+         // Scale the range of the data again 
+      x.domain(d3.extent(data, function(d) { return d.year; }));
+	  y.domain([d3.min(data, function(d) { return d.city; })-1000, d3.max(data, function(d) { return d.city; })+1000]);
+         // Select the section we want to apply our changes to
+         var chart1 = d3.select("#chart1").transition();
+        // Make the changes
+         chart1.select(".line")   // change the line
+            .duration(750)
+            .attr("d", valueline(data));
+         chart1.select(".x.axis") // change the x axis
+            .duration(750)
+            .call(xAxis);
+         chart1.select(".y.axis") // change the y axis
+            .duration(750)
+            .call(yAxis); 
+        $("#Price").val(option.value);
+        $("#Price2").val(t); 
+          });
+         latest = option.value;
+         current = 1;
+        }
+
+
+
+function updater2(option) {
+     var p = option.value;
+     console.log(current);
+     switch(p){
+        case '2012':
+     
+         if (current == 0) {
+         d3.csv("state12.csv", function(error, data) {
+         data.forEach(function(d) {
+	 d.year = parseDate(d.month);
+	 d.city = +d[latest];
+	 });
+         // Scale the range of the data again 
+      x.domain(d3.extent(data, function(d) { return d.year; }));
+	  y.domain([d3.min(data, function(d) { return d.city; })-1000, d3.max(data, function(d) { return d.city; })+1000]);
+         // Select the section we want to apply our changes to
+         var chart1 = d3.select("#chart1").transition();
+        // Make the changes
+         chart1.select(".line")   // change the line
+            .duration(750)
+            .attr("d", valueline(data));
+         chart1.select(".x.axis") // change the x axis
+            .duration(750)
+            .call(xAxis);
+         chart1.select(".y.axis") // change the y axis
+            .duration(750)
+            .call(yAxis); 
+        $("#Price2").val(option.value);
+          });
+       } 
+else { d3.csv("city12.csv", function(error, data) {
+         data.forEach(function(d) {
+	 d.year = parseDate(d.month);
+	 d.city = +d[latest];
+	 });
+         // Scale the range of the data again 
+      x.domain(d3.extent(data, function(d) { return d.year; }));
+	  y.domain([d3.min(data, function(d) { return d.city; })-1000, d3.max(data, function(d) { return d.city; })+1000]);
+         // Select the section we want to apply our changes to
+         var chart1 = d3.select("#chart1").transition();
+        // Make the changes
+         chart1.select(".line")   // change the line
+            .duration(750)
+            .attr("d", valueline(data));
+         chart1.select(".x.axis") // change the x axis
+            .duration(750)
+            .call(xAxis);
+         chart1.select(".y.axis") // change the y axis
+            .duration(750)
+            .call(yAxis); 
+         $("#Price2").val(option.value);
+          });}
+        break;
+
+case '2013':
+     
+         if (  current == 0) {
+         d3.csv("state13.csv", function(error, data) {
+         data.forEach(function(d) {
+	 d.year = parseDate(d.month);
+	 d.city = +d[latest];
+	 });
+         // Scale the range of the data again 
+      x.domain(d3.extent(data, function(d) { return d.year; }));
+	  y.domain([d3.min(data, function(d) { return d.city; })-1000, d3.max(data, function(d) { return d.city; })+1000]);
+         // Select the section we want to apply our changes to
+         var chart1 = d3.select("#chart1").transition();
+        // Make the changes
+         chart1.select(".line")   // change the line
+            .duration(750)
+            .attr("d", valueline(data));
+         chart1.select(".x.axis") // change the x axis
+            .duration(750)
+            .call(xAxis);
+         chart1.select(".y.axis") // change the y axis
+            .duration(750)
+            .call(yAxis);
+        $("#Price2").val(option.value);
+       
+          });
+       } 
+else { d3.csv("city13.csv", function(error, data) {
+         data.forEach(function(d) {
+	 d.year = parseDate(d.month);
+	 d.city = +d[latest];
+	 });
+         // Scale the range of the data again 
+      x.domain(d3.extent(data, function(d) { return d.year; }));
+	  y.domain([d3.min(data, function(d) { return d.city; })-1000, d3.max(data, function(d) { return d.city; })+1000]);
+         // Select the section we want to apply our changes to
+         var chart1 = d3.select("#chart1").transition();
+        // Make the changes
+         chart1.select(".line")   // change the line
+            .duration(750)
+            .attr("d", valueline(data));
+         chart1.select(".x.axis") // change the x axis
+            .duration(750)
+            .call(xAxis);
+         chart1.select(".y.axis") // change the y axis
+            .duration(750)
+            .call(yAxis);
+        $("#Price2").val(option.value);
+          });}
+         break;
+
+case '2014':
+     
+         if (current == 0) {
+         d3.csv("state14.csv", function(error, data) {
+         data.forEach(function(d) {
+	 d.year = parseDate(d.month);
+	 d.city = +d[latest];
+	 });
+         // Scale the range of the data again 
+      x.domain(d3.extent(data, function(d) { return d.year; }));
+	  y.domain([d3.min(data, function(d) { return d.city; })-1000, d3.max(data, function(d) { return d.city; })+1000]);
+         // Select the section we want to apply our changes to
+         var chart1 = d3.select("#chart1").transition();
+        // Make the changes
+         chart1.select(".line")   // change the line
+            .duration(750)
+            .attr("d", valueline(data));
+         chart1.select(".x.axis") // change the x axis
+            .duration(750)
+            .call(xAxis);
+         chart1.select(".y.axis") // change the y axis
+            .duration(750)
+            .call(yAxis);
+        $("#Price2").val(option.value);
+         
+          });
+       } 
+else { d3.csv("city14.csv", function(error, data) {
+         data.forEach(function(d) {
+	 d.year = parseDate(d.month);
+	 d.city = +d[latest];
+	 });
+         // Scale the range of the data again 
+      x.domain(d3.extent(data, function(d) { return d.year; }));
+	  y.domain([d3.min(data, function(d) { return d.city; })-1000, d3.max(data, function(d) { return d.city; })+1000]);
+         // Select the section we want to apply our changes to
+         var chart1 = d3.select("#chart1").transition();
+        // Make the changes
+         chart1.select(".line")   // change the line
+            .duration(750)
+            .attr("d", valueline(data));
+         chart1.select(".x.axis") // change the x axis
+            .duration(750)
+            .call(xAxis);
+         chart1.select(".y.axis") // change the y axis
+            .duration(750)
+            .call(yAxis);
+        $("#Price2").val(option.value);
+        
+          });}
+break;
+case '2015':
+     
+         if (current == 0) {
+         d3.csv("state15.csv", function(error, data) {
+         data.forEach(function(d) {
+	 d.year = parseDate(d.month);
+	 d.city = +d[latest];
+	 });
+         // Scale the range of the data again 
+      x.domain(d3.extent(data, function(d) { return d.year; }));
+	  y.domain([d3.min(data, function(d) { return d.city; })-1000, d3.max(data, function(d) { return d.city; })+1000]);
+         // Select the section we want to apply our changes to
+         var chart1 = d3.select("#chart1").transition();
+        // Make the changes
+         chart1.select(".line")   // change the line
+            .duration(750)
+            .attr("d", valueline(data));
+         chart1.select(".x.axis") // change the x axis
+            .duration(750)
+            .call(xAxis);
+         chart1.select(".y.axis") // change the y axis
+            .duration(750)
+            .call(yAxis); 
+         $("#Price2").val(option.value);
+          });
+       } 
+else { d3.csv("city15.csv", function(error, data) {
+         data.forEach(function(d) {
+	 d.year = parseDate(d.month);
+	 d.city = +d[latest];
+	 });
+         // Scale the range of the data again 
+      x.domain(d3.extent(data, function(d) { return d.year; }));
+	  y.domain([d3.min(data, function(d) { return d.city; })-1000, d3.max(data, function(d) { return d.city; })+1000]);
+         // Select the section we want to apply our changes to
+         var chart1 = d3.select("#chart1").transition();
+        // Make the changes
+         chart1.select(".line")   // change the line
+            .duration(750)
+            .attr("d", valueline(data));
+         chart1.select(".x.axis") // change the x axis
+            .duration(750)
+            .call(xAxis);
+         chart1.select(".y.axis") // change the y axis
+            .duration(750)
+            .call(yAxis);
+         $("#Price2").val(option.value);  
+                  });}
+          break;
+
+default:
+return false;
+
+}
+}
+
+
+
+</script>
+
+
+<p>
+  <label for="Price3" style="font-weight: bold;position: absolute; top:34px; width: 260px; left: 923px; height: 30px; font-size: 20px">Region:</label>
+  <input type="text" id="Price3" style="border: 0;  color: red; font-weight: bold;position: absolute; top:30px; width: 260px; left: 1003px; height: 30px; font-size: 22px" />
+</p>
+
+
+<p>
+  <label for="Price4" style="font-weight: bold;position: absolute; top:34px; width: 160px; left: 1200px; height: 30px; font-size: 20px">Year:</label>
+  <input type="text" id="Price4" style="border: 0;  color: red; font-weight: bold;position: absolute; top:30px; width: 160px; left: 1260px; height: 30px; font-size: 22px" />
+</p>
+
+
+<style id="option">
+.caret.caret-up {
+    border-top-width: 5;
+    border-bottom: 5px solid #fff;
+}
+
+.axis text {
+		font-family: sans-serif;
+		font-size: 15px;
+                font-colour:red;
+
+
+	}
+
+</style>
+
+<DIV style="position: absolute; top:543px; width: 160px; right: 278px; height: 10px;">By State</div>
+<DIV style="position: absolute; top:523px; width: 160px; right: 183px; height: 10px;"><strong>OR</strong></div>
+<DIV style="position: absolute; top:543px; width: 160px; right: 113px; height: 10px;">By City</div>
+<DIV style="position: absolute; top:543px; width: 160px; right: 0px; height: 10px;">By Year</div>
+
+
+
+<select name="state" id="but4">
+  <option value="0">Show by State</option>
+  <option value="Florida" onclick="update2(this)">Florida</option>
+  <option value="Ohio" onclick="update2(this)">Ohio</option> 
+  <option value="Washington" onclick="update2(this)">Washington</option>
+  <option value="Nevada" onclick="update2(this)">Nevada</option> 
+  <option value="Illinois" onclick="update2(this)">Illinois</option>
+  <option value="Virginia" onclick="update2(this)">Virginia</option>  
+  <option value="New Jersey" onclick="update2(this)">New Jersey</option>  
+  <option value="Georgia" onclick="update2(this)">Georgia</option>
+  <option value="Indiana" onclick="update2(this)">Indiana</option> 
+  <option value="Arizona" onclick="update2(this)">Arizona</option>  
+  <option value="Maryland" onclick="update2(this)">Maryland</option>  
+  <option value="Utah" onclick="update2(this)">Utah</option>
+  <option value="Kentucky" onclick="update2(this)">Kentucky</option> 
+  <option value="Oregon" onclick="update2(this)">Oregon</option>
+  <option value="New Mexico" onclick="update2(this)">New Mexico</option> 
+  <option value="Minnesota" onclick="update2(this)">Minnesota</option>
+  <option value="Alabama" onclick="update2(this)">Alabama</option> 
+  <option value="Iowa" onclick="update2(this)">Iowa</option>
+  <option value="Connecticut" onclick="update2(this)">Connecticut</option>
+  
+   
+</select>
+
+<select name="city" id="but5" style="padding:1.2px;">
+    <option>Show by City</option>
+  <option value="Seattle" onclick="updater3(this)">Seattle</option>
+  <option value="Boston" onclick="updater3(this)">Boston</option>
+  <option value="Miami" onclick="updater3(this)">Miami</option>
+  <option value="Atlanta" onclick="updater3(this)">Atlanta</option>
+  <option value="Seattle" onclick="updater3(this)">Seattle</option>
+  <option value="Phoenix" onclick="updater3(this)">Phoenix</option>
+  <option value="Sacramento" onclick="updater3(this)">Sacramento</option>
+  <option value="Las Vegas" onclick="updater3(this)">Las Vegas</option>
+  <option value="San Jose" onclick="updater3(this)">San Jose</option>
+  <option value="Cincinnati" onclick="updater3(this)">Cincinnati</option>
+  <option value="Charlotte" onclick="updater3(this)">Charlotte</option>
+  <option value="Denver" onclick="updater3(this)">Denver</option>
+  <option value="Tampa" onclick="updater3(this)">Tampa</option>
+  <option value="Portland" onclick="updater3(this)">Portland</option>
+  <option value="Cleveland" onclick="updater3(this)">Cleveland</option>
+  <option value="Pittsburgh" onclick="updater3(this)">Pittsburgh</option>
+  <option value="Baltimore" onclick="updater3(this)">Baltimore</option>
+  <option value="Minneapolis" onclick="updater3(this)">Minneapolis</option>
+  <option value="Chicago" onclick="updater3(this)">Chicago</option>
+</select>
+
+<select name="year" id="but6" style=" padding:1.2px;">
+  <option >Select Year</option> 
+  <option value="2012" onclick="updater4(this)">2012</option>
+  <option value="2013" onclick="updater4(this)">2013</option>
+  <option value="2014" onclick="updater4(this)">2014</option>
+  <option value="2015" onclick="updater4(this)">2015</option>
+</select>
+
+
+<script>
+
+
+
+// Set the dimensions of the canvas / graph
+var margin = {top: 20, right: 20, bottom: 30, left: 70},
+    width = 740 - margin.left - margin.right,
+    height = 480 - margin.top - margin.bottom;
+// Parse the date / time
+var parseDate = d3.time.format("%-m").parse;
+// Set the ranges
+var x = d3.time.scale().range([0, width]);
+var y = d3.scale.linear().range([height, 0]);
+// Define the axes
+var xAxis = d3.svg.axis().scale(x)
+    .orient("bottom").ticks(12);
+var yAxis = d3.svg.axis().scale(y)
+    .orient("left").ticks(7);
+// Define the line
+var valueline = d3.svg.line()
+    .x(function(d) { return x(d.year); })
+    .y(function(d) { return y(d.city); });
+
+
+
+// Adds the svg canvas
+var chart2 = d3.select("#chart2")
+    .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+        .attr("transform", 
+              "translate(" + margin.left + "," + margin.top + ")");
+    chart2.append("text")      // text label for the x axis
+        .attr("x", 295 )
+        .attr("y", 415 )
+        .style("text-anchor", "middle")
+        .text("Months");
+  
+   
+// Get the data
+d3.csv("state12.csv", function(error, data) {
+    data.forEach(function(d) {
+        d.year = parseDate(d.month);
+        d.city = +d.Florida;
+    });
+    // Scale the range of the data
+   x.domain([0,0]);
+   y.domain([0,0]);
+    // Add the valueline path.
+   chart2.append("path")
+        .attr("class", "line")
+        .attr("d", valueline(data));
+    // Add the X Axis
+    chart2.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(xAxis);
+    //Add the Y Axis
+    chart2.append("g")
+        .attr("class", "y axis")
+        .call(yAxis);
+
+});
+
+ var latest ="";
+ var current;
+
+
+
+function update2(option) {
+    
+         d3.csv("state12.csv", function(error, data) {
+         data.forEach(function(d) {
+	 d.year = parseDate(d.month);
+	 d.city = +d[option.value];
+	 });
+         // Scale the range of the data again 
+      x.domain(d3.extent(data, function(d) { return d.year; }));
+	  y.domain([d3.min(data, function(d) { return d.city; })-1000, d3.max(data, function(d) { return d.city; })+ 1000]);
+         // Select the section we want to apply our changes to
+         var chart2 = d3.select("#chart2").transition();
+        // Make the changes
+         chart2.select(".line")   // change the line
+            .duration(750)
+            .attr("d", valueline(data));
+         chart2.select(".x.axis") // change the x axis
+            .duration(750)
+            .call(xAxis);
+         chart2.select(".y.axis") // change the y axis
+            .duration(750)
+            .call(yAxis); 
+        $("#Price3").val(option.value);
+     $("#Price4").val(t);
+          });
+         latest = option.value;
+         current = 0;
+        }
+
+
+function updater3(option) {
+    
+         d3.csv("city12.csv", function(error, data) {
+         data.forEach(function(d) {
+	 d.year = parseDate(d.month);
+	 d.city = +d[option.value];
+	 });
+         // Scale the range of the data again 
+      x.domain(d3.extent(data, function(d) { return d.year; }));
+	  y.domain([d3.min(data, function(d) { return d.city; })-1000, d3.max(data, function(d) { return d.city; })+1000]);
+         // Select the section we want to apply our changes to
+         var chart2 = d3.select("#chart2").transition();
+        // Make the changes
+         chart2.select(".line")   // change the line
+            .duration(750)
+            .attr("d", valueline(data));
+         chart2.select(".x.axis") // change the x axis
+            .duration(750)
+            .call(xAxis);
+         chart2.select(".y.axis") // change the y axis
+            .duration(750)
+            .call(yAxis); 
+       $("#Price3").val(option.value);
+       $("#Price4").val(t); 
+          });
+         latest = option.value;
+         current = 1;
+        }
+
+
+
+function updater4(option) {
+     var p = option.value;
+     console.log(current);
+     switch(p){
+        case '2012':
+     
+         if (current == 0) {
+         d3.csv("state12.csv", function(error, data) {
+         data.forEach(function(d) {
+	 d.year = parseDate(d.month);
+	 d.city = +d[latest];
+	 });
+         // Scale the range of the data again 
+      x.domain(d3.extent(data, function(d) { return d.year; }));
+	  y.domain([d3.min(data, function(d) { return d.city; })-1000, d3.max(data, function(d) { return d.city; })+1000]);
+         // Select the section we want to apply our changes to
+         var chart2 = d3.select("#chart2").transition();
+        // Make the changes
+         chart2.select(".line")   // change the line
+            .duration(750)
+            .attr("d", valueline(data));
+         chart2.select(".x.axis") // change the x axis
+            .duration(750)
+            .call(xAxis);
+         chart2.select(".y.axis") // change the y axis
+            .duration(750)
+            .call(yAxis); 
+        $("#Price4").val(option.value);
+          });
+       } 
+else { d3.csv("city12.csv", function(error, data) {
+         data.forEach(function(d) {
+	 d.year = parseDate(d.month);
+	 d.city = +d[latest];
+	 });
+         // Scale the range of the data again 
+      x.domain(d3.extent(data, function(d) { return d.year; }));
+	  y.domain([d3.min(data, function(d) { return d.city; })-1000, d3.max(data, function(d) { return d.city; })+1000]);
+         // Select the section we want to apply our changes to
+         var chart2 = d3.select("#chart2").transition();
+        // Make the changes
+         chart2.select(".line")   // change the line
+            .duration(750)
+            .attr("d", valueline(data));
+         chart2.select(".x.axis") // change the x axis
+            .duration(750)
+            .call(xAxis);
+         chart2.select(".y.axis") // change the y axis
+            .duration(750)
+            .call(yAxis); 
+        $("#Price4").val(option.value);
+          });}
+        break;
+
+case '2013':
+     
+         if (  current == 0) {
+         d3.csv("state13.csv", function(error, data) {
+         data.forEach(function(d) {
+	 d.year = parseDate(d.month);
+	 d.city = +d[latest];
+	 });
+         // Scale the range of the data again 
+      x.domain(d3.extent(data, function(d) { return d.year; }));
+	  y.domain([d3.min(data, function(d) { return d.city; })-1000, d3.max(data, function(d) { return d.city; })+1000]);
+         // Select the section we want to apply our changes to
+         var chart2 = d3.select("#chart2").transition();
+        // Make the changes
+         chart2.select(".line")   // change the line
+            .duration(750)
+            .attr("d", valueline(data));
+         chart2.select(".x.axis") // change the x axis
+            .duration(750)
+            .call(xAxis);
+         chart2.select(".y.axis") // change the y axis
+            .duration(750)
+            .call(yAxis);
+         $("#Price4").val(option.value);  
+          });
+       } 
+else { d3.csv("city13.csv", function(error, data) {
+         data.forEach(function(d) {
+	 d.year = parseDate(d.month);
+	 d.city = +d[latest];
+	 });
+         // Scale the range of the data again 
+      x.domain(d3.extent(data, function(d) { return d.year; }));
+	  y.domain([d3.min(data, function(d) { return d.city; })-1000, d3.max(data, function(d) { return d.city; })+1000]);
+         // Select the section we want to apply our changes to
+         var chart2 = d3.select("#chart2").transition();
+        // Make the changes
+         chart2.select(".line")   // change the line
+            .duration(750)
+            .attr("d", valueline(data));
+         chart2.select(".x.axis") // change the x axis
+            .duration(750)
+            .call(xAxis);
+         chart2.select(".y.axis") // change the y axis
+            .duration(750)
+            .call(yAxis); 
+$("#Price4").val(option.value);
+          });}
+         break;
+
+case '2014':
+     
+         if (current == 0) {
+         d3.csv("state14.csv", function(error, data) {
+         data.forEach(function(d) {
+	 d.year = parseDate(d.month);
+	 d.city = +d[latest];
+	 });
+         // Scale the range of the data again 
+      x.domain(d3.extent(data, function(d) { return d.year; }));
+	  y.domain([d3.min(data, function(d) { return d.city; })-1000, d3.max(data, function(d) { return d.city; })+1000]);
+         // Select the section we want to apply our changes to
+         var chart2 = d3.select("#chart2").transition();
+        // Make the changes
+         chart2.select(".line")   // change the line
+            .duration(750)
+            .attr("d", valueline(data));
+         chart2.select(".x.axis") // change the x axis
+            .duration(750)
+            .call(xAxis);
+         chart2.select(".y.axis") // change the y axis
+            .duration(750)
+            .call(yAxis);
+        $("#Price4").val(option.value);
+          });
+
+       }  
+else { d3.csv("city14.csv", function(error, data) {
+         data.forEach(function(d) {
+	 d.year = parseDate(d.month);
+	 d.city = +d[latest];
+	 });
+         // Scale the range of the data again 
+      x.domain(d3.extent(data, function(d) { return d.year; }));
+	  y.domain([d3.min(data, function(d) { return d.city; })-1000, d3.max(data, function(d) { return d.city; })+1000]);
+         // Select the section we want to apply our changes to
+         var chart2 = d3.select("#chart2").transition();
+        // Make the changes
+         chart2.select(".line")   // change the line
+            .duration(750)
+            .attr("d", valueline(data));
+         chart2.select(".x.axis") // change the x axis
+            .duration(750)
+            .call(xAxis);
+         chart2.select(".y.axis") // change the y axis
+            .duration(750)
+            .call(yAxis);
+         $("#Price4").val(option.value);
+          });}
+
+break;
+case '2015':
+     
+         if (current == 0) {
+         d3.csv("state15.csv", function(error, data) {
+         data.forEach(function(d) {
+	 d.year = parseDate(d.month);
+	 d.city = +d[latest];
+	 });
+         // Scale the range of the data again 
+      x.domain(d3.extent(data, function(d) { return d.year; }));
+	  y.domain([d3.min(data, function(d) { return d.city; })-1000, d3.max(data, function(d) { return d.city; })+1000]);
+         // Select the section we want to apply our changes to
+         var chart2 = d3.select("#chart2").transition();
+        // Make the changes
+         chart2.select(".line")   // change the line
+            .duration(750)
+            .attr("d", valueline(data));
+         chart2.select(".x.axis") // change the x axis
+            .duration(750)
+            .call(xAxis);
+         chart2.select(".y.axis") // change the y axis
+            .duration(750)
+            .call(yAxis); 
+        $("#Price4").val(option.value);  
+          });
+       } 
+else { d3.csv("city15.csv", function(error, data) {
+         data.forEach(function(d) {
+	 d.year = parseDate(d.month);
+	 d.city = +d[latest];
+	 });
+         // Scale the range of the data again 
+      x.domain(d3.extent(data, function(d) { return d.year; }));
+	  y.domain([d3.min(data, function(d) { return d.city; })-1000, d3.max(data, function(d) { return d.city; })+1000]);
+         // Select the section we want to apply our changes to
+         var chart2 = d3.select("#chart2").transition();
+        // Make the changes
+         chart2.select(".line")   // change the line
+            .duration(750)
+            .attr("d", valueline(data));
+         chart2.select(".x.axis") // change the x axis
+            .duration(750)
+            .call(xAxis);
+         chart2.select(".y.axis") // change the y axis
+            .duration(750)
+            .call(yAxis); 
+         $("#Price4").val(option.value);
+          });}
+          break;
+
+default:
+return false;
+
+}
+}
+</script>
+
+</body>
+</html>
